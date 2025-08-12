@@ -11,9 +11,14 @@ mongoose.connect(process.env.DB)
     })
 
 const express = require('express')
+const { createUser } = require('./controller/user.controller')
 const app = express()
 app.listen(process.env.PORT || 8080, () => {
     console.log(`Server running on port ${process.env.PORT}`)
 })
 
 app.use(express.static("view"))
+app.use(express.json())
+app.use(express.urlencoded({ extended: false }))
+
+app.post('/user', createUser)
