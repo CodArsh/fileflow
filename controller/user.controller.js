@@ -1,6 +1,6 @@
 const UserModel = require("../model/user.model")
-
-const createUser = async (req, res) => {
+const bcrypt = require('bcrypt')
+const signup = async (req, res) => {
     try {
         await UserModel.create(req.body)
         res.status(200).json({ message: 'User created successfully!' })
@@ -10,6 +10,28 @@ const createUser = async (req, res) => {
     }
 }
 
+const login = async (req, res) => {
+    try {
+        const { email, password } = req.body
+        const user = await UserModel.findOne({ email: email })
+
+        if (!user)
+            return res.status(404).json({ message: `User doesn't exist!` })
+
+        const isLogin = bcrypt.compareSync(password, user.password)
+        if(!isLogin)
+             return res.status(401).json({ message: `Incorrect password!` })
+
+        res.status(200).json({message:'Login successfull!'})
+
+
+
+    } catch (error) {
+        res.status(500).json(error.message)
+    }
+}
+
 module.exports = {
-    createUser
+    signup,
+    login
 }

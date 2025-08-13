@@ -1,4 +1,5 @@
 const { Schema, model } = require('mongoose')
+const  bcrypt  = require('bcrypt')
 
 const userSchema = new Schema({
     name: {
@@ -11,8 +12,8 @@ const userSchema = new Schema({
         type: String,
         trim: true,
         required: true,
-        minlength:10,
-        maxlength:10
+        minlength: 10,
+        maxlength: 10
     },
     email: {
         type: String,
@@ -45,6 +46,12 @@ userSchema.pre('save', async function (next) {
     if (count)
         throw next(new Error('This email is already exist!'))
 
+    next()
+})
+
+userSchema.pre('save', async function (next) {
+    const encryptedPassword = await bcrypt.hash(this.password.toString(), 12)
+    this.password = encryptedPassword
     next()
 })
 
