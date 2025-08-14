@@ -7,6 +7,12 @@ const fileSchema = new Schema({
         trim: true,
         lowercase: true
     },
+    path: {
+        type: String,
+        required: true,
+        trim: true,
+        lowercase: true
+    },
     type: {
         type: String,
         required: true,
