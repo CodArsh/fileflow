@@ -12,6 +12,7 @@ mongoose.connect(process.env.DB)
 
 
 const express = require("express")
+const cors = require('cors')
 const { v4: uniqueId } = require("uuid")
 
 const multer = require("multer")
@@ -34,8 +35,9 @@ const fetchDashboard = require("./controller/dashboard.controller")
 const verifyToken = require("./controller/token.controller")
 
 const app = express()
-app.listen(process.env.PORT || 8080)
+app.listen(process.env.PORT || 8080, () => console.log("Server running..."))
 
+app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(express.static("view"))
