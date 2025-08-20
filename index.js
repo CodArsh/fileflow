@@ -35,7 +35,7 @@ const fetchDashboard = require("./controller/dashboard.controller")
 const verifyToken = require("./controller/token.controller")
 
 const app = express()
-app.listen(process.env.PORT || 8080, () => console.log("Server running..."))
+app.listen(process.env.PORT || 8080, () => console.log("Server running...",process.env.PORT ))
 
 app.use(cors())
 app.use(express.json())
