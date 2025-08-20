@@ -11,7 +11,7 @@ const fetchDashboard = async (req, res) => {
                 }
             }
         ])
-        res.status(200).json(reports)
+        res.status(200).json({ status: 200, data: reports })
     } catch (error) {
         res.status(500).json({ message: error.message })
     }
