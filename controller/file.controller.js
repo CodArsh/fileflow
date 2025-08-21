@@ -12,7 +12,7 @@ const createFile = async (req, res) => {
             size: file.size
         }
         const newFile = await fileModel.create(payload)
-        res.status(200).json({ message: 'File created successfully', data: newFile })
+        res.status(200).json({ message: 'File uploaded successfully', data: newFile })
     } catch (error) {
         res.status(500).json({ message: error.message })
     }
@@ -21,7 +21,7 @@ const createFile = async (req, res) => {
 const fetchFiles = async (req, res) => {
     try {
         const data = await fileModel.find()
-        res.status(200).json(data)
+        res.status(200).json({ status: 200, data: data })
     } catch (error) {
         res.status(500).json({ message: error.message })
     }
@@ -34,8 +34,8 @@ const deleteFile = async (req, res) => {
         if (!result)
             return res.status(404).json({ message: "File not found" })
 
-        fs.unlinkSync(result.path)
-        res.status(200).json(result)
+        await fs.unlinkSync(result.path)
+        res.status(200).json({ message: 'File deleted', status: 200 })
     } catch (error) {
         res.status(500).json({ message: error.message })
     }
@@ -50,9 +50,7 @@ const downloadFile = async (req, res) => {
 
         const root = process.cwd()
         const filePath = path.join(root, file.path)
-
         res.setHeader('Content-Disposition', `attachment; filename="${file.filename}"`)
-
         res.sendFile(filePath, (error) => {
             if (error) {
                 res.status(404).json({ message: "File not found" })

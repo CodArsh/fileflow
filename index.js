@@ -47,7 +47,6 @@ app.post('/login', login)
 app.post('/file', upload.single('file'), createFile)
 app.post('/token/verify', verifyToken)
 app.get('/dashboard', fetchDashboard)
-
 app.get('/file', fetchFiles)
 app.delete('/file/:id', deleteFile)
 app.get('/file/download/:id', downloadFile)
