@@ -20,7 +20,7 @@ const createFile = async (req, res) => {
 
 const fetchFiles = async (req, res) => {
     try {
-        const data = await fileModel.find()
+        const data = await fileModel.find().sort({ createdAt: -1 })
         res.status(200).json({ status: 200, data: data })
     } catch (error) {
         res.status(500).json({ message: error.message })
@@ -43,6 +43,7 @@ const deleteFile = async (req, res) => {
 
 const downloadFile = async (req, res) => {
     try {
+        console.log('object', req.body)
         const { id } = req.params
         const file = await fileModel.findById(id)
         if (!file)
