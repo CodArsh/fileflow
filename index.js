@@ -43,7 +43,14 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(express.static("view"))
 
-app.post('/signup', signup)
+const demo = (req, res, next) => {
+    // if (!req.body.password)
+    //     return res.staus(400).json({ message: 'Password is required!' })
+
+    next()
+}
+
+app.post('/signup', demo, signup)
 app.post('/login', login)
 app.post('/file', upload.single('file'), createFile)
 app.post('/token/verify', verifyToken)

@@ -1,4 +1,3 @@
-const shareModel = require('../model/share.model')
 const nodeMailer = require('nodemailer')
 const moment = require('moment')
 const connection = nodeMailer.createTransport({
@@ -8,6 +7,19 @@ const connection = nodeMailer.createTransport({
         pass: process.env.SMTP_PASSWORD
     }
 })
+
+// utils/formatFileSize.ts
+const formatFileSize = (bytes) => {
+    if (!bytes) return "0 B";
+
+    const sizes = ["B", "KB", "MB", "GB", "TB"];
+    const i = Math.floor(Math.log(bytes) / Math.log(1024));
+
+    const size = bytes / Math.pow(1024, i);
+
+    return `${size.toFixed(2)} ${sizes[i]}`;
+};
+
 
 const getEmailTemplate = (filename, email, link, type, size, createdAt) => {
     return `
@@ -29,10 +41,10 @@ const getEmailTemplate = (filename, email, link, type, size, createdAt) => {
                 <tr>
                 <td align="left" style="padding:24px 24px 12px 24px;background:#0a66ff;">
                     <h1 style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:20px;line-height:24px;color:#ffffff;">
-                    Your file is ready
+                    Docmate
                     </h1>
                     <p style="margin:8px 0 0 0;font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:18px;color:#dce8ff;">
-                    The secure download link will expires after 3 working days.
+                    India's best and secure file sharing platform
                     </p>
                 </td>
                 </tr>
@@ -64,7 +76,7 @@ const getEmailTemplate = (filename, email, link, type, size, createdAt) => {
                                 ${filename}
                                 </p>
                                 <p style="margin:0 0 6px 0;font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:18px;color:#5b6b82;">
-                                Type: ${type} &nbsp;•&nbsp; Size: ${size}
+                                Type: ${type} &nbsp;•&nbsp; Size: ${formatFileSize(size)}
                                 </p>
                                 <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:18px;color:#7b8aa0;">
                                 Created on: ${moment(createdAt).format("DD MMM YYYY, hh:mm A")}&nbsp;
@@ -137,15 +149,14 @@ const getEmailTemplate = (filename, email, link, type, size, createdAt) => {
     `
 }
 const shareFile = async (req, res) => {
-    console.log('object', req.body)
     const { filename, email, _id, type, size, createdAt } = req.body
-    const link = `http://localhost:8080/api/file/download${_id}`
+    const link = `http://localhost:8080/file/download/${_id}`
     try {
 
         const options = {
             from: process.env.SMTP_EMAIL,
             to: 'arsil.m@hashtechy.com',
-            subject: 'Docmate policy',
+            subject: 'Docmate FileBox',
             html: getEmailTemplate(filename, email, link, type, size, createdAt),
         }
         await connection.sendMail(options)
