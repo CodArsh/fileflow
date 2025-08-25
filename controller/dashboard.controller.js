@@ -1,15 +1,19 @@
 const fileModel = require('../model/file.model')
-
+const { default: mongoose } = require('mongoose')
 const fetchDashboard = async (req, res) => {
     try {
 
         const reports = await fileModel.aggregate([
             {
+                $match: { user: new mongoose.Types.ObjectId(req.user.id) }
+            },
+            {
                 $group: {
                     _id: "$type",
                     total: { $sum: 1 }
                 }
-            }
+            },
+
         ])
         const finalReports = reports
             ?.filter(item => item?._id !== 'binary')

@@ -46,7 +46,7 @@ app.use(express.static("view"))
 
 app.post('/signup',  signup)
 app.post('/login', login)
-app.post('/file', upload.single('file'), createFile)
+app.post('/file',authMiddleware, upload.single('file'), createFile)
 app.post('/token/verify', verifyToken)
 app.get('/dashboard',authMiddleware, fetchDashboard)
 app.get('/file', authMiddleware, fetchFiles)

@@ -6,6 +6,7 @@ const createFile = async (req, res) => {
         const { filename } = req.body
         const file = req.file
         const payload = {
+            user: req.user.id,
             filename: filename,
             path: (file.destination + file.filename),
             type: file.mimetype.split("/")[0],
@@ -20,7 +21,7 @@ const createFile = async (req, res) => {
 
 const fetchFiles = async (req, res) => {
     try {
-        const data = await fileModel.find().sort({ createdAt: -1 })
+        const data = await fileModel.find({ user: req.user.id }).sort({ createdAt: -1 })
         res.status(200).json({ status: 200, data: data })
     } catch (error) {
         res.status(500).json({ message: error.message })
