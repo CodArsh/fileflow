@@ -1,12 +1,12 @@
 const { mongoose, Schema, model } = require('mongoose')
 
 const shareSchema = new Schema({
-    from: {
+    user: {
         type: mongoose.Types.ObjectId,
         ref: 'User',
         required: true
     },
-    to: {
+    receivedEmail: {
         type: String,
         required: true,
         trim: true
@@ -16,7 +16,7 @@ const shareSchema = new Schema({
         ref: 'File',
         required: true
     }
-})
+}, { timestamps: true })
 
 const shareModel = model('Share', shareSchema)
 module.exports = shareModel

@@ -1,5 +1,7 @@
 const nodeMailer = require('nodemailer')
-const moment = require('moment')
+const moment = require('moment');
+const shareModel = require('../model/share.model');
+
 const connection = nodeMailer.createTransport({
     service: 'gmail',
     auth: {
@@ -159,13 +161,37 @@ const shareFile = async (req, res) => {
             subject: 'Docmate FileBox',
             html: getEmailTemplate(filename, email, link, type, size, createdAt),
         }
-        await connection.sendMail(options)
+
+        const payload = {
+            user: req.body.user,
+            receivedEmail: 'arsil.m@hashtechy.com',
+            file: _id
+        }
+
+        await Promise.all([
+            connection.sendMail(options),
+            shareModel.create(payload)
+
+        ])
         res.status(200).json({ status: 200, message: 'Email sent' })
     } catch (error) {
         res.status(500).json({ message: error.message })
     }
 }
 
+const fetchShared = async (req, res) => {
+    try {
+        const history = await shareModel.find({ user: req.user.id })
+            // .populate('user', 'name email number -_id')
+            .populate('file')
+        const finalHistory = history.filter(item => item?.file !== null)
+        res.status(200).json({ status: 200, data: finalHistory })
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+}
+
 module.exports = {
-    shareFile
+    shareFile,
+    fetchShared
 }
