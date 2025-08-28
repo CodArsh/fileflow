@@ -157,14 +157,14 @@ const shareFile = async (req, res) => {
 
         const options = {
             from: process.env.SMTP_EMAIL,
-            to: 'arsil.m@hashtechy.com',
+            to: email,
             subject: 'Docmate FileBox',
             html: getEmailTemplate(filename, email, link, type, size, createdAt),
         }
 
         const payload = {
             user: req.body.user,
-            receivedEmail: 'arsil.m@hashtechy.com',
+            receivedEmail: email,
             file: _id
         }
 
@@ -183,7 +183,7 @@ const fetchShared = async (req, res) => {
     try {
         const history = await shareModel.find({ user: req.user.id })
             // .populate('user', 'name email number -_id')
-            .populate('file')
+            .populate('file').sort({ createdAt: -1 })
         const finalHistory = history.filter(item => item?.file !== null)
         res.status(200).json({ status: 200, data: finalHistory })
     } catch (error) {
